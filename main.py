@@ -44,29 +44,185 @@ Consideraciones:
 
 Este proyecto les brindará la oportunidad de aplicar los conceptos aprendidos en el curso, al mismo tiempo que desarrollan una solución práctica y funcional
 
+
+pseudocodigo del proyecto:
+
+🔧 Inicialización
+Definir lista vehículos_estacionados = []
+Definir capacidad_maxima = número máximo de vehículos permitidos
+Definir tarifas = {"Carro": tarifa_por_hora_carro, "Moto": tarifa_por_hora_moto}
+
+🚗 Función: registrar_entrada()
+Solicitar placa
+Solicitar tipo de vehículo ("Carro" o "Moto")
+Solicitar hora de entrada (formato HH:MM)
+
+Si vehículo ya está en vehículos_estacionados:
+    Mostrar "El vehículo ya está registrado"
+    Salir
+
+Si len(vehículos_estacionados) >= capacidad_maxima:
+    Mostrar "PARQUEADERO LLENO"
+    Salir
+
+Crear tupla datos_inmutables = (placa, tipo)
+Crear diccionario vehiculo = {
+    "placa": placa,
+    "tipo": tipo,
+    "hora_entrada": hora_entrada,
+    "hora_salida": None
+}
+
+Agregar vehiculo a vehículos_estacionados
+Mostrar "Vehículo registrado exitosamente"
+
+
+
+🕒 Función: registrar_salida()
+Solicitar placa
+Solicitar hora de salida (formato HH:MM)
+
+Buscar vehículo en vehículos_estacionados por placa
+
+Si no se encuentra:
+    Mostrar "El vehículo no está registrado"
+    Salir
+
+Actualizar hora_salida en el diccionario del vehículo
+
+Calcular tiempo_estacionado = hora_salida - hora_entrada
+Calcular tarifa = tiempo_estacionado * tarifas[tipo]
+
+Mostrar tiempo_estacionado y tarifa
+
+Eliminar vehículo de vehículos_estacionados
+Mostrar "Salida registrada exitosamente"
+
+
+
+📋 Función: mostrar_vehículos_estacionados()
+Si vehículos_estacionados está vacío:
+    Mostrar "No hay vehículos estacionados"
+    Salir
+
+Para cada vehículo en vehículos_estacionados:
+    Mostrar placa, tipo, hora_entrada, hora_salida
+
+
+📦 Función: verificar_disponibilidad()
+Si len(vehículos_estacionados) < capacidad_maxima:
+    Mostrar "Espacio disponible"
+    Retornar True
+Sino:
+    Mostrar "PARQUEADERO LLENO"
+    Retornar False
+
+
+POO
+
+🧭 Ruta para desarrollar el proyecto con POO
+1. Diseño de Clases
+Define las clases principales que representarán los elementos del sistema:
+
+🔹 Vehiculo
+Atributos:
+placa (str)
+tipo (str: "Carro" o "Moto")
+hora_entrada (datetime)
+hora_salida (datetime o None)
+Métodos:
+calcular_tiempo_estacionado()
+calcular_tarifa(tarifas)
+🔹 Parqueadero
+Atributos:
+capacidad_maxima (int)
+vehiculos_estacionados (list de objetos Vehiculo)
+tarifas (dict: {"Carro": valor, "Moto": valor})
+Métodos:
+registrar_entrada(placa, tipo, hora)
+registrar_salida(placa, hora)
+mostrar_vehiculos()
+verificar_disponibilidad()
+
+
+2. Validaciones
+Implementa validaciones dentro de los métodos:
+
+Verificar si el vehículo ya está registrado.
+Verificar si hay espacio disponible.
+Verificar si el vehículo existe al registrar salida.
+
+3. Interfaz de Usuario (CLI)
+Crea un menú interactivo en consola para que el usuario pueda:
+
+Registrar entrada
+Registrar salida
+Ver vehículos estacionados
+Ver disponibilidad
+Salir del programa
+4. Manejo de Fechas y Horas
+Usa el módulo datetime para convertir cadenas en objetos de hora y calcular diferencias.
+
+5. Buenas Prácticas
+Usa nombres de clases en PascalCase (Vehiculo, Parqueadero)
+Usa nombres de métodos y variables en snake_case (registrar_entrada, hora_salida)
+Documenta tus clases y métodos con docstrings
+Maneja errores con try-except donde sea necesario
+Separa tu código en módulos si crece mucho (por ejemplo, vehiculo.py, parqueadero.py, main.py)
+6. Pruebas
+Haz pruebas unitarias simples para verificar:
+
+Registro correcto
+Cálculo de tarifas
+Validaciones
+
 '''
-import datetime
-from typing import List, Dict, Tuple
-# Definición de constantes
-maximaCapacidad = 10  # Capacidad máxima del parqueadero
-# Estructura de datos para almacenar los vehículos
-vehiculosEstacionados: List[Dict[str, str]] = []
-tarifas = {'Carro': 5000, 'Moto': 3000}  # Tarifas por hora
-# Función para registrar la entrada de un vehículo
-def registrarEntrada(placa: str, tipo: str, horaEntrada: str) -> None:
-    if len(vehiculosEstacionados) >= maximaCapacidad:
-        print("PARQUEADERO LLENO")
-        return
-    for vehiculo in vehiculosEstacionados:
-        if vehiculo['Placa'] == placa:
-            print("El vehículo ya está estacionado.")
-            return
-    horaEntradaObj = datetime.datetime.strptime(horaEntrada, "%H:%M")
-    vehiculo = {
-        'Placa': placa,
-        'Tipo': tipo,
-        'HoraEntrada': horaEntradaObj,
-        'HoraSalida': None
-    }
-    vehiculosEstacionados.append(vehiculo)
-    print(f"Vehículo {placa} registrado a las {horaEntrada}.")
+from datetime import datetime
+from Parqueadero import Parqueadero
+
+def main():
+    capacidad_maxima = 5
+    tarifas = {"Carro": 2000, "Moto": 1000}
+    parqueadero = Parqueadero(capacidad_maxima, tarifas)
+
+    while True:
+        print("\nMenú:")
+        print("1. Registrar entrada")
+        print("2. Registrar salida y generar cobro")
+        print("3. Mostrar vehículos estacionados")
+        print("4. Verificar disponibilidad")
+        print("5. Salir")
+
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            placa = input("Ingrese la placa del vehículo: ")
+            tipo = input("Ingrese el tipo de vehículo (Carro/Moto): ")
+            hora_entrada_str = input("Ingrese la hora de entrada (HH:MM): ")
+            hora_entrada = datetime.strptime(hora_entrada_str, "%H:%M")
+            parqueadero.registrar_entrada(placa, tipo, hora_entrada)
+
+        elif opcion == "2":
+            placa = input("Ingrese la placa del vehículo: ")
+            hora_salida_str = input("Ingrese la hora de salida (HH:MM): ")
+            hora_salida = datetime.strptime(hora_salida_str, "%H:%M")
+            parqueadero.registrar_salida(placa, hora_salida)
+
+        elif opcion == "3":
+            parqueadero.mostrar_vehiculos()
+
+        elif opcion == "4":
+            parqueadero.verificar_disponibilidad()
+
+        elif opcion == "5":
+            print("Saliendo del programa...")
+            break
+
+        else:
+            print("Opción no válida, intente nuevamente.")
+
+if __name__ == "__main__":
+    main()
+
+        
+
